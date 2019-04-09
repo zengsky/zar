@@ -1,4 +1,4 @@
 # zar
-zar
 
-User user = User.find(1);
+
+`User user = User.find(1);`

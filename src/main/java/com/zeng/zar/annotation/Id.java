@@ -1,0 +1,18 @@
+package com.zeng.zar.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.zeng.zar.type.GenType;
+
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Id {
+    
+    public String value() default "";
+    
+    public GenType generate() default GenType.INCR;
+
+}

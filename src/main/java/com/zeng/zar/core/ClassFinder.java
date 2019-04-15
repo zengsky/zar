@@ -1,6 +1,5 @@
 package com.zeng.zar.core;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.zeng.zar.annotation.MarkPoint;
 import com.zeng.zar.exception.ClassFinderException;
 
 import javassist.ClassPool;
@@ -99,27 +97,15 @@ public class ClassFinder {
         }
     }
     
-    private static void initIndex(StackTraceElement[] elems) {
-        boolean start = false;
-        try {
-            for(StackTraceElement elem : elems){
-                Class<?> clazz = Class.forName(elem.getClassName());
-                Method[] methods = clazz.getDeclaredMethods();
-                boolean find = false;
-                for(Method method : methods){
-                    if(!method.getName().equals(elem.getMethodName()))
-                        continue;
-                    if(method.getAnnotation(MarkPoint.class) != null){
-                        find = true;
-                        increaseIndex();
-                    }
+    private static void initIndex(Class<?> clazz, StackTraceElement[] elems) {
+        if(clazz != null) {
+            for(StackTraceElement elem : elems) {
+                if(elem.getClassName().equals(clazz.getCanonicalName())) {
+                    increaseIndex();
                 }
-                if(start && !find)
-                    break;
-                start = true;
             }
-        } catch (Exception e) {
-            throw new ClassFinderException("failed to init stack trace index", e);
+        }else {
+            throw new ClassFinderException("target class is null");
         }
     }
     
@@ -157,7 +143,8 @@ public class ClassFinder {
         
         public FinderData(Throwable throwable, Class<?> clazz){
             StackTraceElement[] elems = throwable.getStackTrace();
-            initIndex(elems);
+            //initIndex(elems);
+            initIndex(clazz, elems);
             classType = clazz.getName().replace(".", "/");
             setTargetInfo(elems[index.get() + 1]);
             setPattern(elems[index.get()]);

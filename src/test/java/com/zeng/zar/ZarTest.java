@@ -16,8 +16,10 @@ public class ZarTest {
     @Test
     public void test(){
         User user = User.load(1);
+        System.out.println(user.getName());
         assertNotNull(user);
         User user1 = User.find(1);
+        System.out.println(user1);
         assertNotNull(user1);
     }
     

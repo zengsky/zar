@@ -4,22 +4,19 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
-import com.zeng.zar.annotation.MarkPoint;
 import com.zeng.zar.exception.ClassFinderException;
 
 public class Model implements Serializable{
     
     private static final long serialVersionUID = -3376098921179941174L;
     
-    @MarkPoint
     public static <M extends Model> M find(Serializable id){
         return newInstance();
     }
     
-    @MarkPoint
     public static <M extends Model> M load(Serializable id){
         try {
-            Class<M> modelClass = Model.getModelClass();
+            Class<M> modelClass = getModelClass();
             int modifiers = modelClass.getModifiers();
             if(Modifier.isPrivate(modifiers) || Modifier.isFinal(modifiers))
                 throw new RuntimeException("can not proxy for a private or final class");
@@ -29,7 +26,6 @@ public class Model implements Serializable{
         }
     }
     
-    @MarkPoint
     @SuppressWarnings("unchecked")
     public static <M extends Model> M newInstance(){
         M m = null;
@@ -49,7 +45,6 @@ public class Model implements Serializable{
         return m;
     }
     
-    @MarkPoint
     public static <M extends Model> Class<M> getModelClass(){
         Class<M> modelClass = ClassFinder.findClass(Model.class);
         if(modelClass == null)
